@@ -34,11 +34,8 @@ class KNN_SL:
 			distances = {}
 			target = {}
 			for train_num in range(len(self.train_features_)):
-				#distances.update({train_num: self.calculate_distance(features.iloc[test_num,:], self.train_features_.iloc[train_num,:])})
 				distances[train_num] = self.calculate_distance(features.iloc[test_num,:], self.train_features_.iloc[train_num,:])
-			sorted_distances = sorted(distances) #return a list (row#: distances)
            
-            
 			sorted_distances = sorted(distances.values()) # Sort the values
             
             #put sorted values back in dictionary
