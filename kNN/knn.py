@@ -2,20 +2,18 @@ import numpy as np
 
 class KNN_SL:
 
-	def __init__(self, k, random_state=None):
-		self.k = k
+	def __init__(self, n_neighbors, random_state=None):
+		self.n_neighbors = n_neighbors
 		self.random_state = random_state
 		self.train_labels_ = None
 		self.predict_labels = list()
 		self.train_features_ = None
-		# YOUR ADDITIONAL CODE HERE
 
 
 	def fit(self, features: np.ndarray, labels: np.ndarray) -> None:
 		'''
 		Create the KNN model (or not)
 		'''
-		# YOUR CODE HERE
 		self.train_labels_ = labels.tolist()
 		self.train_features_ = features
 
@@ -28,13 +26,12 @@ class KNN_SL:
 		Predict the labels for the input features given the
 		training instances.
 		'''
-		# YOUR CODE HERE
-        
+
 		for test_num in range(features.shape[0]):
 			distances = {}
 			target = {}
 			for train_num in range(len(self.train_features_)):
-				distances[train_num] = self.calculate_distance(features.iloc[test_num,:], self.train_features_.iloc[train_num,:])
+				distances[train_num] = self.calculate_distance(features[test_num], self.train_features_[train_num])
            
 			sorted_distances = sorted(distances.values()) # Sort the values
             
@@ -47,8 +44,7 @@ class KNN_SL:
 						break
 
             #convert sorted dictionary to list, and get only the first "k" number of entries
-			k_distances = list(sorted_distances_dict.items())[:self.k]
-			
+			k_distances = list(sorted_distances_dict.items())[:self.n_neighbors]
 			for item in k_distances:
 				if self.train_labels_[item[0]] not in target:
 					target[self.train_labels_[item[0]]] = 0
@@ -56,17 +52,10 @@ class KNN_SL:
 					target[self.train_labels_[item[0]]] += 1
                     
 			self.predict_labels.append(max(target, key=target.get))
+
 		return self.predict_labels        
             
        
-
-
-
-
-
-
-
-
 
 
 
