@@ -1,3 +1,5 @@
+#Author: Sarah Ling
+
 import numpy as np
 
 class KNN_SL:
@@ -11,53 +13,39 @@ class KNN_SL:
 
 
 	def fit(self, features: np.ndarray, labels: np.ndarray) -> None:
-		'''
-		Create the KNN model (or not)
-		'''
+        # Saves train labels and features for later use
+        
 		self.train_labels_ = labels.tolist()
 		self.train_features_ = features
 
 	def calculate_distance(self, d_features, c_features) -> int:
-		#calculates and returns the euclidian distance between two points with the same number of features
+		# Calculates and returns the euclidian distance between two points with the same number of features
+        
 		return np.sum((d_features - c_features)**2)
     
 	def predict(self, features: np.ndarray) -> np.array:
-		'''
-		Predict the labels for the input features given the
-		training instances.
-		'''
+		# Predicts the labels for the input features given the training instances.
 
 		for test_num in range(features.shape[0]):
-			distances = {}
+			distances = []
 			target = {}
 			for train_num in range(len(self.train_features_)):
-				distances[train_num] = self.calculate_distance(features[test_num], self.train_features_[train_num])
+				distances.append([train_num, self.calculate_distance(features[test_num], self.train_features_[train_num])])
            
-			sorted_distances = sorted(distances.values()) # Sort the values
+			# Sort the values
+			distances.sort(key=lambda x:x[1])
             
-            #put sorted values back in dictionary
-			sorted_distances_dict = {} 
-			for i in sorted_distances:
-				for key in distances.keys():
-					if distances[key] == i:
-						sorted_distances_dict[key] = distances[key]
-						break
-
-            #convert sorted dictionary to list, and get only the first "k" number of entries
-			k_distances = list(sorted_distances_dict.items())[:self.n_neighbors]
+            # get only the first "k" number of entries
+			k_distances = distances[:self.n_neighbors]
+            
+            # Use dictionary keep keep track of the number of rows in k_distances that have a certain train_y label
 			for item in k_distances:
 				if self.train_labels_[item[0]] not in target:
 					target[self.train_labels_[item[0]]] = 0
 				else:
 					target[self.train_labels_[item[0]]] += 1
-                    
+             
+            #add label associated with the most rows into predict_labels
 			self.predict_labels.append(max(target, key=target.get))
 
 		return self.predict_labels        
-            
-       
-
-
-
-
-
